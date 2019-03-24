@@ -1,4 +1,4 @@
-sim synsim prog prog_fw: % : hx8k%
+prog_fw prog synsim sim: % : hx8k%
 #
 
 hx8k%:
