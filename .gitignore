@@ -1,0 +1,6 @@
+build/
+*.vcd
+*.out
+*.blif
+*.txt
+*.bin
