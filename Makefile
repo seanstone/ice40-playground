@@ -1,3 +1,6 @@
+fw:
+	$(MAKE) -C firmware prog
+
 prog_fw prog synsim sim: % : hx8k%
 #
 
