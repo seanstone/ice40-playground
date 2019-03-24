@@ -1,9 +1,12 @@
 MEMORY = 8k
 PROJECT = hello
+TOP = setbit
+
+bin: build/$(PROJECT).bin
+pnr: build/$(PROJECT).asc
+syn: build/$(PROJECT).json
 
 sim: build/$(PROJECT)_tb.vcd
-
-syn: build/$(PROJECT).bin
 
 prog: build/$(PROJECT).bin
 	iceprog $<
@@ -17,14 +20,18 @@ build/%_tb.vcd: %.v %_tb.v
 	# Visulaize using gtkwave
 	gtkwave build/$*_tb.vcd
 
-build/%.bin: %.v %.pcf
+build/%.json: %.v
 	mkdir -p build/
 	# Synthesis
-	yosys -p "synth_ice40 -blif build/$*.blif" $*.v
+	yosys -p "synth_ice40 -top $(TOP) -json $@" $^
+
+build/%.asc: build/%.json %.pcf
 	# Place & route
-	arachne-pnr -d $(MEMORY) -p $*.pcf build/$*.blif -o build/$*.txt
+	nextpnr-ice40 --hx8k --json $< --pcf $(filter %.pcf,$^) --asc $@
+
+build/%.bin: build/%.asc
 	# Generate bitstream
-	icepack build/$*.txt build/$*.bin
+	icepack $< $@
 
 clean:
 	rm -rf build/
