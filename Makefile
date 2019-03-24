@@ -1,2 +1,5 @@
-test:
-	$(MAKE) TOOLCHAIN_PREFIX=riscv32-unknown-elf- -C picorv32 test
+sim synsim prog prog_fw: % : hx8k%
+#
+
+hx8k%:
+	$(MAKE) -C picorv32/picosoc $@
